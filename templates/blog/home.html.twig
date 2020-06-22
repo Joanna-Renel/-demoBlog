@@ -1,0 +1,45 @@
+{# extends est une commande TWIG permettant d'hériter d'un template en particulier.
+Ici, notre gabarit de base 'base.html.twig" (header + footer + liens css etc...)
+
+home.html.twig hérite du gabarit de base bas.html.twig pour afficher le header, footer...#}
+{% extends "base.html.twig"%}
+
+{# block est une commande TWIG permettant de faire appel au block d'un template hérité. Ici, nous faisons appel au block body du base.html.twig#}
+{# fait référence au block body de base.html.twig pour afficher le contenu entre la nav et le footer #}
+{% block body %}
+
+{# Twig est un langage de rendu. Avantages :
+- Simplicité du langage
+- facilité d'écriture des affichages
+- beaucoup de fonctionnalités (filtres...)
+- Absence de php dans l'affichage (permet d'abstraire les affichages des balises PHP)
+- Plus simple à intégrer par un intégrateur #}
+
+<h1> {{title}} </h1>
+ {# Title est une variable TWIG provient du controller 'BlogController' et de la méthode home() #}
+
+ {# {{}} -> doubles accolades, c'est une interpolation #}
+ {# {%%} -> appelle une commande de TWIG #}
+
+{# on interpole (affiche) l'indice title provenant du fichier BlogController entre doubles accolades
+Title devient donc une variable dans le template home.html.twig
+Pquoi Twig ? Car ce langage de rendu est facile à écrire + une absence totale de <?php ?>. Il traite les données venant du controller
+Il simplifie le rendu et est déjà intégré à Symfony #}
+
+{# Pour appeler une commande de twig, on utilise cette syntaxe : #}
+
+{% if age > 18 %}
+
+    <p> Vous êtes majeur </p>
+
+{% else %}
+
+    <p> Vous êtes mineur</p>
+
+{% endif %}
+
+<p>lorem ipsum</p>
+
+<p>lorem ipsum</p>
+
+{% endblock %}
