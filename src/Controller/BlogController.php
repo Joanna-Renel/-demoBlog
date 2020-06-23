@@ -32,12 +32,12 @@ class BlogController extends AbstractController
         ]);
     }
 
-
+    // home() : méthode 
     /**
      * @Route ("/", name="home")
      */
 
-    // argument 1 : point d'entrée du site, de l'application
+    // argument 1 : point d'entrée du site, (de l'application)
     // argument 2 : nom de la route
     public function home() 
     // cette méthode envoie le rendu sur le navigateur avec le template 'home.html.twig"
@@ -47,5 +47,17 @@ class BlogController extends AbstractController
             'title' => "Bienvenue sur le blog Symfony",
             'age' => 25
         ]);
+    }
+
+    // Pour chaque template, on a une route et une méthode précises
+    // show() est une méthode permettant de voir le détail d'un article
+
+    /**
+     * @Route("/blog/12", name="blog_show")
+     */
+
+    public function show()
+    {
+        return $this->render('blog/show.html.twig');
     }
 }

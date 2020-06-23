@@ -1,4 +1,4 @@
-{# :: sTRUCTURE communue à tous nos templates.
+{# :: Structure commune à tous nos templates.
 Blocks prédéfinis pour le css, le js 
 gabarit de base
 #}
@@ -29,10 +29,13 @@ gabarit de base
                 <div class="collapse navbar-collapse" id="navbarsExample04">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Home</a>
+                            <a class="nav-link" href="{{ path('home')}}">Home</a>
+                            {# path() est une fonction Twig permettant de générer une URL en fonction du nom de la route envoyée en argument.
+                            ex : path('blog') --> URL 'blog'#}
+                            {# Le nom de la route 'blog'{{ path('home')}}  #}
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Articles</a>
+                            <a class="nav-link" href="{{ path('blog')}}">Articles</a>
                         </li>
                         
                         <li class="nav-item dropdown">
@@ -61,7 +64,7 @@ gabarit de base
         {# Footer #}
         <footer class="bg-secondary text-white text-center py-3">
             {# &copy = balise html qui affiche le copyright #}
-            &copy; 2020 - Joanna Rénel 
+            &copy; 2020 - Joanna Rénel - All rights reserved
         </footer>
         {# JS de Bootstrap #}
         {% block javascripts %}
