@@ -20,7 +20,7 @@ class ArticleFixtures extends Fixture
             // Pour avoir les titres, le contenu, les images et l'heure de chq article, on appelle les seters de l'objet Article
             // (car ces propriétés sont private) pour ajouter un titre, une image et une date à nos articles
             $article->setTitle("Titre de l'article n° $i")
-                    ->setContent("<p>Contenu de l'article n° $i </p>")
+                    ->setContent("<p> Contenu de l'article n° $i </p>")
                     ->setImage("https://picsum.photos/200")
                     // "\" permet de revenir au namespace global de php pour appeler l'entité DateTime
                     // DateTime est une classe prédéfinie en php qui permet de manipuler des objets date
