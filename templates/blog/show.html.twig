@@ -7,32 +7,26 @@
 {% block body %}
 
     <h1 class="display-4 text-center my-4">Détail de l'article</h1>
+
+    {# article est une variable TWIG qui provient du controller 'blogController' et de la méthode show() ($this->render(['article'])) #}
     
+    {# La variable article contient le détail de l'article sélectionné en BDD. #}
+    {# Pas besoin de boucle FOR puisque que nous n'avons qu'un seul article sélectionné, donc une seule ligne sélectionnée dans la table Article #}
     {# p-0=padding 0, mb-2=margin bottom 2 #}
-     <div class="col-md-12 card mb-2 text-center p-0">
-            <img src="https://picsum.photos/seed/picsum/300/100" class="card-img-top" alt="...">
+     <div class="col-md-12 card mb-2 p-0">
+
+                 {# Le filtre replace() remplace un élément par une chaine de caractères. 
+                 Il remplace la taille d'origine de l'image (200) par une largeur de 1000 et une hauteur de 300 #}
+                <img src={{ article.image|replace({"200": "1000/300"}) }} class="card-img-top" alt="{{ article.image }}">
                 <div class="card-body">
-                <h5 class="card-title text-center">Card title</h5>
-                <p class="card-text">
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                </p>
+                {# Pas besoin de boucle car il n'y a qu'un seul article à afficher
+                On appelle la variable article qui vient du controller #}
+                <h5 class="card-title text-center">{{ article.title }}</h5>
+                <p class="card-text"> {{ article.content|raw }}</p
 
-                <p class="card-text">
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                </p>
+                <hr>
 
-                <p class="card-text">
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                </p>
+                <p class="font-italic text-right"> Posté le {{ article.createdAt|date("m/d/Y")}} à {{ article.createdAt|date("H:i:s")}} </p>
                 </div>
     </div>
         
