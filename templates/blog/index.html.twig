@@ -8,47 +8,54 @@
 
     <div class="row d-flex justify-content-around">
 
+        {# for est une boucle / commande TWIG. Ici, on a réceptionné 10 articles de la BDD qui passeront en revue dans la boucle #}
+
+        {# La variable articles provient du controller 'BlogController' et de la méthode 'index()" ($this->render(['articles']). 
+        Elle contient les 10 articles sélectionnés en BDD #}
+
+        {# data est une variable de réception qui réceptionne un article par tour de boucle #}
+
+        {#  On appelle une commande de TWIG une boucle for qui passera en revue tous les articles de la BDD 
+            - articles vient du Blogcontroller
+            - data est une variable de réception qui récupère un article à chaque tour de boucle et déclarée directement dans la boucle 
+            (On peut choisir le nom que l'on veut pour nommer cette variable) 
+            - Syntaxte twig d'une boucle for = FOR + variable de réception (réceptionne l'article) IN variable du controller #}
+        
+        {# idem foreach($articles as $data) #}
+        {% for data in articles %}
+
         <div class="card mb-2 text-center" style="width: 18rem;">
-            <img src="https://picsum.photos/seed/picsum/200" class="card-img-top" alt="...">
+
+                {# J'interpole dans la variable data (l14) et j'y pioche, avec le '.', l'image de chaque article #}
+            <img src={{ data.image }} class="card-img-top" alt="...">
+
                 <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{{ path('blog_show') }}" class="btn btn-secondary">Go somewhere</a>
+
+                {# J'interpole dans la variable data (l14) et j'y pioche le titre de chaque article #}
+                <h5 class="card-title">{{ data.title }}</h5>
+
+                {# J'interpole dans la variable data (l14) et j'y pioche le contenu de chaque article
+                    - le filtre TWIG raw échappe les balises html <p> stockés en BDD et affiche le texte brut #}
+                <p class="card-text">{{ data.content|raw }}</p>
+
+                <hr>
+
+                {# La BDD renvoie un objet DateTime donc il ne peut pas être converti en chaîne de caractères.
+                (cf filtres date dans docs Twig) Le filtre date de Twig avec mois, jour, année en argument et heure, minute, seconde #}
+                <p> Posté le {{ data.createdAt|date("m/d/Y")}} à {{ data.createdAt|date("H:i:s")}}</p>
+
+                <a href="{{ path('blog_show' , {'id' : data.id } ) }}" class="btn btn-secondary">Détails</a>
                 {# On appelle la fonction path de twig et on lui envoie en URL le nom de la route qui s'appelle blog_show définie dans la méthode show
                 du BlogController #}
+                {# La route blog_show est chargée d'afficher le détail de l'article et attend un paramètre de type id dans l'URL.
+                Donc la méthode path() attend en 2e argument l'id de l'article à afficher {'id' : data.id } #}
+
         
-                </div>
-        </div>
-        
-        
-        <div class="card mb-2 text-center" style="width: 18rem;">
-            <img src="https://picsum.photos/seed/picsum/200" class="card-img-top" alt="...">
-                <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{{ path('blog_show')}}" class="btn btn-secondary">Go somewhere</a>
                 </div>
         </div>
 
+        {% endfor %}
         
-        <div class="card mb-2 text-center" style="width: 18rem;">
-            <img src="https://picsum.photos/seed/picsum/200" class="card-img-top" alt="...">
-                <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{{ path('blog_show')}}" class="btn btn-secondary">Go somewhere</a>
-                </div>
-        </div>
-
-        <div class="card mb-2 text-center" style="width: 18rem;">
-            <img src="https://picsum.photos/seed/picsum/200" class="card-img-top" alt="...">
-                <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{{ path('blog_show')}}" class="btn btn-secondary">Go somewhere</a>
-                </div>
-        </div>
-
     </div>
 
 {% endblock %}
