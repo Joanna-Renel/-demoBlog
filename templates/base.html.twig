@@ -37,6 +37,12 @@ gabarit de base
                         <li class="nav-item active">
                             <a class="nav-link" href="{{ path('blog')}}">Articles</a>
                         </li>
+
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('blog_create')}}">Créer un article</a>
+                            {# Pour créer un lien menant au formulaire de création d'un nouvel article dans la nav,
+                            on ajoute le nom de la route 'blog/new' qui s'appelle "blog_create" #}
+                        </li>
                         
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
