@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Article;
+use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,6 +111,7 @@ class BlogController extends AbstractController
     }
 
     // '/blog/new' crée une nouvelle route pour créer un formulaire qui insèrera de nouveaux articles et les modifiera
+    // Quand aucun id n'est détecté dans l'URL par Symfony, il crée un nouvel article.
     /**
      * @Route ("/blog/new", name="blog_create")
      * @Route ("/blog/{id}/edit", name="blog_edit")
@@ -117,8 +119,11 @@ class BlogController extends AbstractController
      */
     // La 2e route '/blog/{id}/edit' servira à modifier un article en fonction de son id.
     // L'injection de dépendance Article $article permet à SYMFONY de récupérer l'id de l'article à modifier dans la BDD
-    // '$article = null' car l'article doit être vide pour permettre, soit de créer un article (avec ses geters et seters) ou de le modifier
-    public function create(Article $article = null, Request $request, EntityManagerInterface $manager)
+    // '$article = null' car l'article doit être vide pour permettre, soit de créer un article (avec ses geters et seters) soit de le modifier
+    // En injectant 'Article $article = null' en paramètre de la méthode create(), on indique que l'article est null par défaut et n'aura de valeur
+    // que s'il existe déjà en BDD et que son id figure dans l'URL. 
+
+    public function form(Article $article = null, Request $request, EntityManagerInterface $manager)
 
         /*
             La classe Request est une classe prédéfinie en Symfony qui stocke toutes les données véhiculées par les Superglobales ($_POST,
@@ -169,7 +174,7 @@ class BlogController extends AbstractController
         //     // Je pioche dans l'objet $request la propriété request qui contient les données du formulaire
         //     // et la méthode get() qui contient le titre, le contenu et l'image de l'article
         //     // $article contient les données saisies par le formulaire
-        //     $article->setTitle($request->request->get('title'))
+        //     $article->setTitle($request->request->get('title')) // équivalent de $_POST['title'];
         //             ->setContent($request->request->get('content'))
         //             ->setImage($request->request->get('image'))
         //             ->setCreatedAt(new DateTime());
@@ -210,49 +215,89 @@ class BlogController extends AbstractController
 
 
         // 1. On crée un nouvel article.
-        // Si l'article n'existe pas, j'instancie ma classe Article pour créer un nouvel article.
+        // Si l'article n'existe pas et que l'URL ne contient l'id d'aucun article récupéré en BDD, on instancie la classe Article pour créer un nouvel article.
+
+            /* Si l'article n'existe pas (car non défini et null), cela veut dire qu'aucun id n'a été transmis dans l'URL
+            On entre aloirs dans la condition pour créer/insérer un nouvel article
+            */
         if(!$article)
         {
             $article = new Article;
-        }
-        
 
+        }
+
+            /* On importe la classe permettant de créer le formulaire d'ajout/modification d'article (ArticleType)
+               On envoie, en 2e argument, l'objet $article pour spécifier que le formulaire est destiné à remplir l'objet $article. 
+            */
+        // createForm() permet d'appeler une classe de type formulaire en premier argument (ArticleType)
+        // On précise l'objet à remplir en 2e argument.
+        $form = $this->createForm(ArticleType::class, $article);
+        
+        // En remplissant l'objet, Symfony est capable de récupérer ce que contient cet objet et de les envoyer dans les champs
         // $article->setTitle('contenu bidon')
         //         ->setContent('article bidon');
 
 
-        // createFormBuilder créé un formulaire et on lui envoie en argument l'objet article pour lui préciser 
+        // createFormBuilder permet de générer un formulaire à partir d'une entité. On lui envoie en argument l'objet article pour lui préciser 
         // que le formulaire va servir à remplir l'objet article.
+
         // add() est une fonction de Symforny qui permet de créer un champ du formulaire
-        // getForm() valide le formulaire et permettra d'avoir un rendu sur le template
+
+        // getForm() valide le formulaire et permettra d'avoir un rendu visuel sur le template
         // TextType est une classe prédéfinie qui permet d'ajouter un champ texte
         // On peut aussi ajouter des attributs
-        $form = $this->createFormBuilder($article)
+        // $form = $this->createFormBuilder($article)
          
-                        // ->add('title', TextType::class, [
-                        //     'attr' => [
-                        //         'placeholder' => "Saisir le titre de l'article.",
-                        //         'class' => "col-md-6 mx-auto"
-                        //     ]
-                        // ])
+        //                 // ->add('title', TextType::class, [
+        //                 //     'attr' => [
+        //                 //         'placeholder' => "Saisir le titre de l'article.",
+        //                 //         'class' => "col-md-6 mx-auto"
+        //                 //     ]
+        //                 // ])
 
-                        ->add('title')
-                        ->add('content')
-                        ->add('image')
-                        ->getForm();
+        //                 ->add('title')
+        //                 ->add('content')
+        //                 ->add('image')
+        //                 ->getForm();
 
-        // handleRequest est une méthode issue de l'objet $form et récupère les données du formulaire et remplit les setters à notre place.
-        $form->handleRequest($request);
+        /*handleRequest() est une méthode issue de l'objet $form et récupère les données du formulaire et remplit les setters à notre place.
+        Elle remplit l'objet Article à notre place en faisant en injectant les données dans les setters :
+        $article->setTitle($request->request->get('title')) // équivalent de $_POST['title'];
+                    ->setContent($request->request->get('content'))
+                    ->setImage($request->request->get('image'))
+                    ->setCreatedAt(new DateTime());
+        */
 
+            /* La méthode handleRequest() permet de récupérer toutes les valeurs du formulaire contenu dans $request (équivalent à un $_POST)
+            afin de les envoyer directement dans les setters de l'objet $article.
+            */
+        $form->handleRequest($request); // = $form->handleRequest("données du formulaire")
+
+        /* Si le formulaire a bien été soumis quand on a cliqué sur 'submit', et que tout est bien validé, cad que chaque valeur
+         du formulaire a bien été envoyée dans les bons setters, alors on entre dans la condition if. 
+        */
+        // Si le formulaire est soumis et que ces champs contiennent des données valides (que les setters ont bien été définis)
         if($form->isSubmitted() && $form->isValid())
         {   
-            // On appelle seulement le seter de la date
-            $article->setCreatedAt(new \DateTime);
+            /*
+             Afin de garder la date d'origine de création de l'article, en cas de modification, on contrôle l'existance de l'article :
+                1. Si l'id de l'article n'est pas défini, cela veut dire que c'est un nouvel article, donc une insertion, alors on envoie
+             
+            */
+            // Si l'article ne possède pas d'id, j'appelle le seter et je crée un nouvel objet DateTime pour créer une nouvelle date.
+            // Si l'article possède un id, la condition ne s'applique pas et on conserve la date de publication d'origine.
+            if(!$article->getId()){
+
+                // on appelle seulement le seter de la date pour instancier un nouvel objet DateTime et créer une nouvelle date
+                $article->setCreatedAt(new \DateTime);
+            }
 
             $manager->persist($article);
 
             $manager->flush();
 
+            // Quand le formulaire est soumis,
+            // redirectToRoute() nous redirige vers la page ccontenant le détail de l'article qui vient d'être créé grâce à son id
             return $this->redirectToRoute('blog_show', [
                 'id'=> $article->getId()
             ]);
@@ -261,10 +306,18 @@ class BlogController extends AbstractController
 
         // 2. On envoie le formulaire sur la vue/template
         return $this->render('blog/create.html.twig', [
-            'formArticle'=>$form->createView()
+
+            // createView() est une méthode de Symfony
+            // qui contient un objet contenant un formulaire qui sera envoyé dans le template/ la vue. On gérera l'objet qui contient le formulaire avec TWIG.
+            'formArticle'=> $form->createView(),
+            // Ajout d'un indice 'editMode' qui pointe vers l'objet article. Le geter de l'entité Article retourne l'id de l'article
+            // Si l'id est différent de null, c'est qu'il est connu en BDD et que l'id de l'article existe déjà.
+            // Si id = null => insertion d'un nouvel article
+            // Si id est !== null => modification de l'article existant 
+            'editMode'=> $article->getid() !== null
+            
         ]);
-        // createView() est une méthode de Symfony
-        // qui crée un objet sui sera envoyé dans le template/ la vue. On gérera l'objet qui contient le formulaire avec TWIG.
+        
     }
 
 
@@ -322,7 +375,7 @@ class BlogController extends AbstractController
         // On envoie avec le template 'show.html.twig' l'article sélectionné en BDD
         ]);
 
-        // Arguments render() = ('template_à_envoyer', 'ARRAY options')
+        // Arguments render() = ('template_à_envoyer sur le navigateur', 'ARRAY options')
     }
 
     

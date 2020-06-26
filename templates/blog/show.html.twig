@@ -26,8 +26,16 @@
 
                 <hr>
 
-                <p class="font-italic text-right"> Posté le {{ article.createdAt|date("m/d/Y")}} à {{ article.createdAt|date("H:i:s")}} </p>
+                {# Ajout d'un bouton 'Modifier' pour modifier l'article depuis le détail de l'article.
+                'blog_edit' est la route pour modifier un article. Elle attend un paramètre de type 'id'
+                Le paramètre id de l'URL correspond à l'article à modifier. #}
+                <span class="col-md-6 text-left"><a class="text-left btn btn-warning" href="{{ path('blog_edit', {'id' : article.id }) }}">Modifier</a></span>
+                
+                {# Affichage de la date #}
+                <span class=" col-md-2 offset-md-4 font-italic text-right"> Posté le {{ article.createdAt|date("m/d/Y")}} à {{ article.createdAt|date("H:i:s")}} </span>
                 </div>
+
+                
     </div>
         
 
