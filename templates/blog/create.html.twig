@@ -5,38 +5,70 @@
 {# On appelle le block body qui contient notre nouvel article #}
 {% block body %}
 
-<h1 class="display-4 text-center my-4">Créer un nouvel article</h1>
+    <h1 class="display-4 text-center my-4">
 
-{# 3E METHDOE POUR AFFICHER UN FORMULAIRE #}
+    {# On récupère l'indice EditMode de la fonction render() l 286 du BlogController pour permettre au titre d'évoluer
+    en fonction du scénario insertion/modification d'un article.
+    
+    Variable TWIG qui provient du controller 'BlogController' de la méthode form(). Elle permet de savoir si un article
+    possède un article ou non. Cela permet de gérer l'affichage en fonction de l'action (ajout/modification)
+    #}
+
+    {# Si la condition if renvoie TRUE, cela veut dire que l'article possède un ID et qu'il s'agit d'une modification.
+    Sinon, dans tous les autres cas, l'article n'a pas d'id, donc il s'agit d'une insertion.
+    #}
+
+    {% if editMode %}
+        Modification de l'article
+    {% else %}
+        Créer un nouvel article
+    {% endif %}
+
+    </h1>
+
+
+
+{# 3E METHODE POUR AFFICHER UN FORMULAIRE #}
 
     {# form_start() fonction de TWIG permettant de commencer le formulaire, de générer la balise <form> ouvrante, Symfony intègre automatiquement l'attribut 'method="post"' #}
     {# form_end() fonction de TWIG permettant de terminer le formulaire, de générer la balise </form> fermante #}
     {# form_row() fonction TWIG qui permet d'afficher les champs du formulaire 1 par 1 #}
     {# Le bouton submit est codé en dur puisque le formulaire servira à la fois et à insérer mais aussi à modifier #}
-    {# SI on crée la bouton avec la fonction add() dans le controller, il sera difficile de modifier son lable (modifier ou supprimer) #}
+    {# Si on crée la bouton avec la fonction add() dans le controller, il sera difficile de modifier son lable (modifier ou supprimer) #}
 
 
     
     {# formArticle est l'indice venant du controller #}
     {# form_themes: ['bootstrap_4_layout.html.twig'] a été ajouté dans config>packages>twig.yaml
-    pour importer le style de Bootstrap dans le formulaire ci-dessous #}
+    pour importer la bibliothèque de Bootstrap et styliser le formulaire ci-dessous #}
 
-    {# form_start = balise ouvrante du formulaire. Elle contient déjà la méthode et les paramètres html.#}
+    {# form_start = balise ouvrante du formulaire. (<form method="post">) Elle contient déjà la méthode et les paramètres html.#} 
 
     {{ form_start(formArticle, {'attr': {'class': 'col-md-7 mx-auto'}}) }}
 
-    {# form_row permet d'afficher les champs un par un. On ajoute chaque champ en accédant au name du formulaire  #}
+    {# form_row permet d'afficher les champs un par un. On ajoute chaque champ en accédant au name du formulaire par un "."  #}
         {{ form_row(formArticle.title, {'attr': {'placeholder': "Saisir le titre de l'article."}}) }}
 
         {{ form_row(formArticle.content, {'attr': {'placeholder': "Contenu de l'article.", "rows": 15}}) }}
 
         {{ form_row(formArticle.image, {'attr': {'placeholder': "Saisir l'URL de l'image."}}) }}
+
     
     {# Le bouton submit est créé manuellement/en dur car le formulaire servira à la fois et insérer mais aussi à modifier les articles  #}
     {# Si on crée le bouton avec la fonction add(), le label crée ne pourra pas être modifié #}
-        <button type="submit" class="btn btn-info">Enregistrer</button>
+        <button type="submit" class="btn btn-info">
 
-    {# form_start = balise fermante du formulaire.#}
+        {# Condition qui permet au bouton de changer en fonction du scénario insertion/modification d'un article
+        (id connu ou inconnu pour modifier ou non l'article) #}
+        {% if editMode %}
+        Enregistrer les modifications
+        {% else %}
+        Créer un nouvel article
+        {% endif %}
+
+        </button>
+
+    {# form_start = balise fermante du formulaire. (</form>)#}
     {{ form_end(formArticle) }}
 
 {# 2E METHDOE POUR AFFICHER UN FORMULAIRE #}
