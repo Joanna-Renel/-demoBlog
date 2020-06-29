@@ -2,10 +2,14 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         users_in_memory: { memory: null }
-    firewalls:
+
+    # partie du site à protéger
+    firewalls: 
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        # contenu principal à protéger
         main:
             anonymous: true
             lazy: true
@@ -20,5 +24,5 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/admin, roles: ROLE_ADMIN } // ceux qui ont accès à la partie sont les personnes ayant un Role Admin en BDD
         # - { path: ^/profile, roles: ROLE_USER }

@@ -36,9 +36,9 @@ class Comment
      * @ORM\ManyToOne(targetEntity=Article::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $article;
+    private $article; // En sélectionnant un commentaire, on a accès à l'article qui lui est associé.
 
-    public function getId(): ?int
+    public function getId(): ?int 
     {
         return $this->id;
     }

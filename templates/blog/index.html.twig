@@ -35,14 +35,17 @@
                 <h5 class="card-title">{{ data.title }}</h5>
 
                 {# J'interpole dans la variable data (l14) et j'y pioche le contenu de chaque article
-                    - le filtre TWIG raw échappe les balises html <p> stockés en BDD et affiche le texte brut #}
-                <p class="card-text">{{ data.content|raw }}</p>
+                    - le filtre TWIG raw échappe les balises html <p> stockés en BDD et affiche le texte brut 
+                    - Le filtre TWIG slice est l'équivalent d'un substr. Il coupe une chaîne de caractères
+                    et affiche le neombre de caractères demandés. slice(départ, nb de caractères à afficher) #}
+                <p class="card-text">{{ data.content|raw|slice(1, 100) }}...</p>
 
                 <hr>
 
                 {# La BDD renvoie un objet DateTime donc il ne peut pas être converti en chaîne de caractères.
                 (cf filtres date dans docs Twig) Le filtre date de Twig avec mois, jour, année en argument et heure, minute, seconde #}
-                <p> Posté le {{ data.createdAt|date("m/d/Y")}} à {{ data.createdAt|date("H:i:s")}}</p>
+                {# 'data.category.title' affiche le nom de la catégorie associée à chaque article #}
+                <p> Posté le {{ data.createdAt|date("m/d/Y")}} à {{ data.createdAt|date("H:i:s")}} dans la catégorie <strong>{{ data.category.title }}</strong> </p>
 
                 <a href="{{ path('blog_show' , {'id' : data.id } ) }}" class="btn btn-secondary">Détails</a>
                 {# On appelle la fonction path de twig et on lui envoie en URL le nom de la route qui s'appelle blog_show définie dans la méthode show
