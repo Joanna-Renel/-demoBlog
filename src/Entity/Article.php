@@ -60,7 +60,7 @@ class Article
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="articles")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $category;
+    private $category; //Si je sélectionne un article, j'aurais accès à la catégorie
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="article", orphanRemoval=true)

@@ -13,30 +13,67 @@
     {# La variable article contient le détail de l'article sélectionné en BDD. #}
     {# Pas besoin de boucle FOR puisque que nous n'avons qu'un seul article sélectionné, donc une seule ligne sélectionnée dans la table Article #}
     {# p-0=padding 0, mb-2=margin bottom 2 #}
-     <div class="col-md-12 card mb-2 p-0">
+    <div class="col-md-12 card mb-2 p-0">
 
-                 {# Le filtre replace() remplace un élément par une chaine de caractères. 
-                 Il remplace la taille d'origine de l'image (200) par une largeur de 1000 et une hauteur de 300 #}
-                <img src={{ article.image|replace({"200": "1000/300"}) }} class="card-img-top" alt="{{ article.image }}">
-                <div class="card-body">
-                {# Pas besoin de boucle car il n'y a qu'un seul article à afficher
-                On appelle la variable article qui vient du controller #}
-                <h5 class="card-title text-center">{{ article.title }}</h5>
-                <p class="card-text"> {{ article.content|raw }}</p
+            {# Le filtre replace() remplace un élément par une chaine de caractères. 
+            Il remplace la taille d'origine de l'image (200) par une largeur de 1000 et une hauteur de 300 #}
+        <img src={{ article.image|replace({"200": "1000/300"}) }} class="card-img-top" alt="{{ article.image }}">
+        
+        <div class="card-body">
+            {# Pas besoin de boucle car il n'y a qu'un seul article à afficher
+            On appelle la variable article qui vient du controller #}
+            <h5 class="card-title text-center">{{ article.title }}</h5>
+            <p class="card-text"> {{ article.content|raw }}</p
 
-                <hr>
+            <hr>
 
-                {# Ajout d'un bouton 'Modifier' pour modifier l'article depuis le détail de l'article.
-                'blog_edit' est la route pour modifier un article. Elle attend un paramètre de type 'id'
-                Le paramètre id de l'URL correspond à l'article à modifier. #}
-                <span class="col-md-6 text-left"><a class="text-left btn btn-warning" href="{{ path('blog_edit', {'id' : article.id }) }}">Modifier</a></span>
-                
-                {# Affichage de la date #}
-                <span class=" col-md-2 offset-md-4 font-italic text-right"> Posté le {{ article.createdAt|date("m/d/Y")}} à {{ article.createdAt|date("H:i:s")}} </span>
+            {# Ajout d'un bouton 'Modifier' pour modifier l'article depuis le détail de l'article.
+            'blog_edit' est la route pour modifier un article. Elle attend un paramètre de type 'id'
+            Le paramètre id de l'URL correspond à l'article à modifier. #}
+            <span class="col-md-6 text-left"><a class="text-left btn btn-warning" href="{{ path('blog_edit', {'id' : article.id }) }}">Modifier</a></span>
+            
+            {# Affichage de la date #}
+            {# 'article.category.title' est un objet dans un objet : on affiche le nom de la catégorie dont l'article fait partie #}
+            <span class=" col-md-2 offset-md-4 font-italic text-right"> Posté le {{ article.createdAt|date("m/d/Y")}} à {{ article.createdAt|date("H:i:s")}} dans la catégorie <strong>{{ article.category.title }} </strong></span>
+        </div>
+
+    </div>
+
+    <div class="col-md-12">
+
+        <h2 class="text-center mt-5">Derniers avis...</h2>
+            {# Grâce aux relations bidirectionnelles, lorsque nous sélectionnons une table SQL,
+            nous accédons aux données des autres tables. Il faut pour cela créer des relations entre les tables ou Foreign Key #}
+
+            {# Dans notre cas, si nous sélectionnons l'article id 1, nous accédons aux données de l'article,
+            mais aussi aux données des autres tables qui sont liées à cet article. 
+            Nous avons donc accès à la catégorie associée à l'article et à tous ses commentaires. #}
+            
+            {# On pioche dans la variable TWIG article afin d'accéder aux commentaires de l'article (article.comments)
+            (comments est une propriété de la table Article) #}
+
+            {# On fait une boucle pour récupérer tous les commentaires de chaque article #}
+            {# 'comment' est une variable de réception qui réceptionne une ligne de commentaire de la BDD par tour de boucle FOR #}
+            
+
+            {% for comment in article.comments %}
+
+                {# À chaque tour de boucle, on récupère un commentaire, son auteur et la date de publication  #}
+                <div class ="row border rounded mb-2 bg-dark text-white">
+                    <div class="col-md-2">
+                        <span> {{ comment.author }}</span>
+                        <small class="font-italic">( {{ comment.createdAt|date("d/m/Y à H:i:s") }} ) </small>
+                    </div>
+
+                    <div class="col-md-10">
+                        <p> {{ comment.content|raw }}</p>
+                    </div>
                 </div>
 
-                
+            {% endfor %}
     </div>
+                
+    
         
 
 {% endblock %}
