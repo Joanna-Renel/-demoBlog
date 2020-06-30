@@ -1,19 +1,58 @@
 security:
+
+    # Gestion de la sécurité du site
+
+    # Déclaration de l'encodeur. On précise à Symfony que nous allosn encoder un paramètre dans la classe/entity User (password)
+    # bcrypt est le type d'encodage utilisé dans l'entité User (clé de hachage pour encoder les mots de passe en BDD)
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+
+    # indique à Symfony où sont les données de l'utilisateur (dans quelles entités) et quelles propriétés on va contrôler
     providers:
         users_in_memory: { memory: null }
+        
+        # Les données à contrôler sont en base de données, dans l'entité User.
+        # La propriété à contrôler est l'email.
+        # Le mot de passe est contrôlé automatiquement dans la BDD
+        in_database:
+            entity:
+                class: App\Entity\User
+                property: email
 
-    # partie du site à protéger
+    # représentent les darties du site à protéger et par quels moyens
     firewalls: 
+
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # contenu principal à protéger
+        # Tout le contenu du site à protéger
         main:
+
+            # N'importe qui peut visiter le site (si on l'enlève, le site est inaccessible)$
             anonymous: true
             lazy: true
-            provider: users_in_memory
+
+            # Le contenu du site sera protégé avec les données stockées en BDD dans la table User (le provider in_database est défini ci-dessus, l20)
+            provider: in_database
+
+            # On indique à Symfony que le site est protégé par un système de formulaire de connexion (form_login)
+            form_login:
+                # login_path indique à Symfony sur quelle route se trouve le formulaire de connexion
+                login_path: security_login
+
+                # check_path indique à Symfony sur quelle route il doit contrôler les données saisies dans le formulaire de connexion
+                check_path: security_login
+
+            logout:
+                # route de déconnexion
+                path: security_logout
+                
+                # Une fois déconnecté, on est redirigé vers la liste des articles via la route (/blog)
+                target: blog
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

@@ -49,6 +49,10 @@
     {# form_row permet d'afficher les champs un par un. On ajoute chaque champ en accédant au name du formulaire par un "."  #}
         {{ form_row(formArticle.title, {'attr': {'placeholder': "Saisir le titre de l'article."}}) }}
 
+    {# Ajout d'un nouveau champ qui permet de sélectionner la catégorie de l'article lors de sa création ou de sa modification #}
+        {{ form_row(formArticle.category) }}
+
+
         {{ form_row(formArticle.content, {'attr': {'placeholder': "Contenu de l'article.", "rows": 15}}) }}
 
         {{ form_row(formArticle.image, {'attr': {'placeholder': "Saisir l'URL de l'image."}}) }}
@@ -56,7 +60,7 @@
     
     {# Le bouton submit est créé manuellement/en dur car le formulaire servira à la fois et insérer mais aussi à modifier les articles  #}
     {# Si on crée le bouton avec la fonction add(), le label crée ne pourra pas être modifié #}
-        <button type="submit" class="btn btn-info">
+        <button type="submit" class="btn btn-info mb-5">
 
         {# Condition qui permet au bouton de changer en fonction du scénario insertion/modification d'un article
         (id connu ou inconnu pour modifier ou non l'article) #}

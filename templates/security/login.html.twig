@@ -1,0 +1,43 @@
+{% extends "base.html.twig"%}
+
+{% block title %}  Voici mon blog Symfony | Inscription {% endblock %}
+
+{% block body %}
+
+    {# app est une variable TWIG qui contient toutes les informations liées à la session en cours #}
+    {# Les messages utilisateurs sont conservés en session. #}
+    {# On boucle puisqu'il peut y avoir plusieurs messages utilisateur #}
+    {# les messages sont accessibles via la fonction flashes() de l'objet app #}
+    {# 'success' représente l'identifiant du message utilisateur définit dans le contrôleur 'SecurityController' (addFlash()) #}
+    {# 'message' => variable de reception qui receptionne un message utilisateur par tour de boucle. Ce message 'success'
+    provient du Security_Controller l.70 #}
+
+    {% for message in app.flashes('success') %}
+
+        <div class="col-md-6 mt-4 mx-auto bg-success rounded text-white text-center p-2">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+<h1 class="display-4 text-center my-4">Identifiez-vous</h1>
+
+{# {{ path('security_login') }} permet de préciser à Symfony qu'il doit contrôler les données du formulaire sur la route 'security_login'
+(check_path dans config > security.yaml)  #}
+
+<form method="post" class="col-md-5 mx-auto" action="{{ path('security_login') }}">
+
+  <div class="form-group">
+    <label for="_username">Email</label>
+    <input type="text" class="form-control" id="_username" name="_username">
+  </div>
+
+  <div class="form-group">
+    <label for="_password">Password</label>
+    <input type="password" class="form-control" id="_password" name="_password">
+  </div>
+
+  <button type="submit" class="btn btn-dark">S'identifier</button>
+</form>
+
+{% endblock %}
