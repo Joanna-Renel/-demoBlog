@@ -21,7 +21,7 @@ gabarit de base
 
     {# Nav de Bootstrap #}
         <nav class="navbar navbar-expand-md navbar-dark bg-secondary">
-                <a class="navbar-brand" href="#">Expand at md</a>
+                <a class="navbar-brand" href="#">Mon Blog Symfony</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -35,13 +35,26 @@ gabarit de base
                             {# Le nom de la route 'blog'{{ path('home')}}  #}
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('blog')}}">Articles</a>
+                            <a class="nav-link" href="{{ path('blog') }}">Articles</a>
                         </li>
 
                         <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('blog_create')}}">Créer un article</a>
+                            <a class="nav-link" href="{{ path('blog_create') }}">Créez un article</a>
                             {# Pour créer un lien menant au formulaire de création d'un nouvel article dans la nav,
                             on ajoute le nom de la route 'blog/new' qui s'appelle "blog_create" #}
+                        </li>
+
+                        
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('security_registration') }}">Créez votre compte</a>
+                            {# Pour créer un lien menant au formulaire de création d'un nouvel article dans la nav,
+                            on ajoute le nom de la route 'blog/new' qui s'appelle "blog_create" #}
+                        </li>
+
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('security_login') }}">Identifiez-vous</a>
+                            {# Pour créer un lien menant au formulaire d'identification,
+                            on ajoute le nom de la route '/connexion' qui s'appelle "security_login" #}
                         </li>
                         
                         <li class="nav-item dropdown">
@@ -56,6 +69,9 @@ gabarit de base
                     
                 </div>
         </nav>
+
+        {# permet d'accéder aux données de l'utilisateur connecté dans la session #}
+        {{ dump(app.user) }}
 
 
         {# Pour centrer le contenu du bloc body, on utilise un container #}
