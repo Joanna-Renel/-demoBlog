@@ -12,8 +12,13 @@ gabarit de base
     {# CDN de Bootstrap #}
         {% block stylesheets %}
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+            
             {# On interpole et on utilise une fonction TWIG asset() qui pointe sur le dossier public et génère un lien absolu (=comme une URL) jusqu'au fichier style.css #}
-            <link rel="stylesheet" href="{{ asset('css/style.css')}}"
+            <link rel="stylesheet" href="{{ asset('css/style.css')}}">
+            
+            {# Lien vers un site d'icônes #}
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
         {% endblock %}
         
     </head>
@@ -21,7 +26,7 @@ gabarit de base
 
     {# Nav de Bootstrap #}
         <nav class="navbar navbar-expand-md navbar-dark bg-secondary">
-                <a class="navbar-brand" href="#">Mon Blog Symfony</a>
+                <a class="navbar-brand" href="#">Mon blog Symfony</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -38,40 +43,81 @@ gabarit de base
                             <a class="nav-link" href="{{ path('blog') }}">Articles</a>
                         </li>
 
-                        <li class="nav-item active">
+                        {# app.user permet de stocker les informations de l'internaute qui est connecté, cad les informations de la session en cours. #}
+                        {# Si app.user renvoie TRUE, donc si l'internaute est bien connecté, on entre dans le if #}
+                        {% if app.user %}
+
+                            <li class="nav-item active">
                             <a class="nav-link" href="{{ path('blog_create') }}">Créez un article</a>
                             {# Pour créer un lien menant au formulaire de création d'un nouvel article dans la nav,
                             on ajoute le nom de la route 'blog/new' qui s'appelle "blog_create" #}
-                        </li>
+                            </li>
+
+                        {% endif %}
 
                         
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('security_registration') }}">Créez votre compte</a>
-                            {# Pour créer un lien menant au formulaire de création d'un nouvel article dans la nav,
-                            on ajoute le nom de la route 'blog/new' qui s'appelle "blog_create" #}
-                        </li>
+                        {# Si l'internaute n'est pas connecté, il peut créer un compte et s'identifier. #}
+                        {% if not app.user %}
 
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('security_login') }}">Identifiez-vous</a>
-                            {# Pour créer un lien menant au formulaire d'identification,
-                            on ajoute le nom de la route '/connexion' qui s'appelle "security_login" #}
-                        </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('security_registration') }}">Créez votre compte</a>
+                                {# Pour créer un lien menant au formulaire de création d'un nouvel article dans la nav,
+                                on ajoute le nom de la route 'blog/new' qui s'appelle "blog_create" #}
+                            </li>
+
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('security_login') }}">Identifiez-vous</a>
+                                {# Pour créer un lien menant au formulaire d'identification,
+                                on ajoute le nom de la route '/inscription' qui s'appelle "security_registration" #}
+                            </li>
+
+                        {% endif %}
                         
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown04">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>
+                         {# is_granted est une fonction TWIG qui permet de voir les données de la session utilisateur et de savoir siun utilisateur ADMIN peut avoir accès au back office #}
+
+                        {% if is_granted('ROLE_ADMIN') %}
+
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ path('admin') }}">Back Office</a>
+                                {# Pour créer un lien menant au formulaire d'identification,
+                                on ajoute le nom de la route '/connexion' qui s'appelle "security_login" #}
+                            </li>
+
+                        {% endif %}
+
+                        {# Lien de déconnexion #}
+                        {% if app.user %}
+
+                            <li class="nav-item active">
+                            <a class="nav-link" href="{{ path('security_logout') }}">Déconnexion</a>
+                            </li>
+
+                        {% endif %}
                     </ul>
                     
                 </div>
         </nav>
 
-        {# permet d'accéder aux données de l'utilisateur connecté dans la session #}
-        {{ dump(app.user) }}
+        
+        {# app est une variable TWIG prédéfinie qui contient toutes les informations liée à la session utilisateur  en cours
+        (informations de l'internaute connecté) = $_SESSION #}
+
+        {# Si app.user = null => internaute n'est pas connecté. #}
+
+        {# {{ dump(app.user) }} #}
+
+        {# {{ dump(app.user) }} permet d'accéder aux données de l'utilisateur connecté dans la session
+        // email : tata@gmail.com
+        // mdp : ceciestmonmotdepasse
+
+        App\Entity\User {#681 ▼
+        -id: 6
+        -email: "tata@gmail.com"
+        -username: "Joanna"
+        -password: "$2y$13$tObZoaiH9SA.w1896Eq0lOR0pcyEMyO3xNCHdNmGoCIE2N0rTswru"
+        +confirm_password: null
+        }#}
+
 
 
         {# Pour centrer le contenu du bloc body, on utilise un container #}
@@ -86,7 +132,7 @@ gabarit de base
         {# Footer #}
         <footer class="bg-secondary text-white text-center py-3">
             {# &copy = balise html qui affiche le copyright #}
-            &copy; 2020 - Joanna Rénel - All rights reserved
+            &copy; 2020 - Joanna Rénel - All rights reserved.
         </footer>
         {# JS de Bootstrap #}
         {% block javascripts %}

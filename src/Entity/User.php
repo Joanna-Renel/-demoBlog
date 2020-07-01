@@ -64,6 +64,11 @@ class User implements UserInterface
     // car ils ne seront pas ajoutés en BDD.
     public $confirm_password;
 
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -111,7 +116,7 @@ class User implements UserInterface
         getPassword(), getUsername(), getRoles(), getSalt() et eraseCredentials().    
     */
 
-    // Cette méthode est uniquement destinée à nettoyer les mots de passe en texte brut éventuellement stockés
+    // Cette méthode est uniquement destinée à nettoyer les mots de passe en texte brut/ en clair éventuellement stockés en BDD
     public function eraseCredentials()
     {
 
@@ -125,10 +130,23 @@ class User implements UserInterface
     }
 
     // Cette méthode renvoie un tableau de chaînes de caractères où sont stockés les rôles(droits) accordés à l'utilisateur.
-    // (administrateur ou utilisateur classique)
+    // (administrateur qui a accès au back office ou utilisateur classique ?)
     public function getRoles()
+    {   
+        // Ne retourne que les ROLE_USER de la BDD. Les administrateurs n'ont pas accès au site car ils ont un ROLE_ADMIN
+        // qui n'est pas retourné par cette méthode.
+        
+        // return ['ROLE_USER'];
+
+        // retourne les rôles accordés à chaque utilisateur en BDD.
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
     {
-        return ['ROLE_USER'];
+        $this->roles = $roles;
+
+        return $this;
     }
 
 

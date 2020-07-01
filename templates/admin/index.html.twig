@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue sur le Back Office{% endblock %}
+
+{% block body %}
+
+    <h1 class="display-4 text-center my-4">Back Office</h1>
+
+    <p class="text-center">Bienvenue sur votre Back Office</p>
+
+    {# offset-md-3 permet de créer 3 colonnes de part et d'autre du contenu 
+    p-2 = padding 2#}
+    <a href="{{ path('admin_articles') }}" class="col-md-6 offset-md-3 btn btn-dark p-2 mb-3">Gestion des articles</a>
+
+    <a href="" class="col-md-6 offset-md-3 btn btn-primary p-2 mb-3">Gestion des membres</a>
+
+    <a href="" class="col-md-6 offset-md-3 btn btn-info p-2 mb-3">Gestion des catégories</a>
+
+    <a href="" class="col-md-6 offset-md-3 btn btn-warning p-2 mb-3">Gestion des commentaires</a>
+
+
+{% endblock %}

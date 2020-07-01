@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Back Office | Gestion des articles {% endblock %}
+
+{% block body %}
+
+    <h1 class="display-4 text-center my-4">Gestion des articles</h1>
+
+    {# L'indice 'articles' vient de l'AdminController (méthode adminArticles()) qui renvoie #}
+    {# data réceptionne un article par tour de boucle #}
+    <table class="table table-bordered text-center">
+
+        {# On boucle sur les colonnes récupérées en BDD et envoyées par le controller AdminController. #}
+        {# 'colonnes' -> variable contenant les noms des colonnes de la table 'Article' qui provient du contrôleur AdminController. #}
+
+        {% for data in articles %}
+            
+            <tr>
+                {# data récupère le nom d'une colonne par tour de boucle FOR, en éjectant l'entête 'id' #}
+                 {% for data in colonnes %}
+
+                    {% if data != 'id' %}
+
+                        <th> {{ data }}</th>
+
+                    {% endif %}
+
+                 {% endfor %}
+
+                        <th>Catégorie</th>
+                        <th>Modifier</th>
+                        <th>Supprimer</th>
+
+
+            </tr>
+
+            <tr>
+                <td> {{ data.title }}</td>
+
+                <td> {{ data.content|raw }}</td>
+
+                {# On met l'image dans une balise <img> car l'objet image renvoie une url et non l'image elle-même #}
+                <td><img src="{{ data.image }}" alt="{{ data.title }}" style ="width: 150px;"></td>
+
+                <td> {{ data.createdAt|date("d/m/Y à H:i:s") }}</td>
+
+                {# Category renvoie un objet. On pointe donc sur la propriété 'title' pour récupérer le titre de la catégorie #}
+                <td> {{ data.category.title }}</td>
+                
+                {# route paramétrée qui attend un id dans l'url. Le paramètre 'id' à envoyer se trouve dans 'data' qui contient toutes les données d'un article par tour de boucle #}
+                <td><a href="{{ path('admin_edit_article', {'id' : data.id} ) }}"><i class="btn btn-dark far fa-edit"></i></a></td>
+                <td><a href=""></a><i class="btn btn-danger far fa-trash-alt"></i></td>
+
+            </tr>
+
+        {% endfor %}
+    </table>
+  
+{% endblock %}

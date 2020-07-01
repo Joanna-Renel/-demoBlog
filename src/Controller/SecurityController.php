@@ -6,8 +6,10 @@ use App\Entity\User;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends AbstractController
@@ -32,7 +34,7 @@ class SecurityController extends AbstractController
         // Ce formulaire sera destiné à remplir l'objet $user
         $form = $this->createForm(RegistrationType::class, $user);
 
-        dump($request);
+        // dump($request);
 
         /* Résultat du dump($request)
 
@@ -61,6 +63,10 @@ class SecurityController extends AbstractController
             // On transmet le MDP au seter de l'objet $user
             $user->setPassword($hash);
 
+            // On affecte un ROLE_USER à chaque nouvel inscrit sur le site. Il n'aura donc pas accès au back office.
+            // Il pourra simplemenent publier ou modifier des articles.
+            $user->setroles(["ROLE_USER"]);
+
             $manager->persist($user); // On prépare l'insertion
             $manager->flush(); // On exécute la requête d'insertion
 
@@ -83,17 +89,41 @@ class SecurityController extends AbstractController
     /**
      * @Route("/connexion", name="security_login")
      */
+
+    // Cette route permet de se connecter
     
-    public function login()
-    {
-        return $this->render('security/login.html.twig');
+    // Response est une classe prédéfinie en Symfony.
+    // Penser à importer la classe use Symfony\Component\HttpFoundation\Response;
+   
+    public function login(AuthenticationUtils $authenticationUtils) : Response
+    {   
+        // AuthenticationUtils est une classe prédéfinie en Symfony qui contient des méthodes qui renvoient un message d'erreur en cas de mauvaise connexion
+        // (si l'internaute a saisi des identifiants incorrects au moment de la connexion)
+    
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        
+        // Elle permet aussi de récupérer le dernier username (email) renseigné par l'internaute en cas d'erreur de connexion.
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        // On envoie le message d'erreur et le dernier email saisi sur le template
+        return $this->render('security/login.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error
+        ]);
+                    
+    
     }
+
+
 
     /**
      * @Route("/deconnexion", name="security_logout")
      *
      */
 
+    // Cette route permet de se déconnecter
+    
     public function logout()
     {
         // Cette méthode ne retourne rien. Il nous suffit d'avoir une route pour la déconnexion.

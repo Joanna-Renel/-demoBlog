@@ -6,7 +6,7 @@
 
 <h1 class="display-4 text-center my-4">Créez votre compte</h1>
 
-{# La variable TWIG form correspond à l'indice 'form' de SecurityController. #}
+{# La variable TWIG form correspond à l'indice 'form' qui provient du SecurityController. #}
 
 {# form_start  appelle la balise ouvrante du formulaire #}
 {{ form_start(form, { 'attr' : { 'class' : 'col-md-6 mx-auto' }}) }}
@@ -23,7 +23,7 @@
     <button type="submit" class="btn btn-dark">Validez votre inscription</button>
 
 
-{# form_start  appelle la balise ouvrante du formulaire #}
+{# form_start  appelle la balise fermante du formulaire #}
 {{ form_end(form) }}
 
 

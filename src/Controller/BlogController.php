@@ -105,7 +105,7 @@ class BlogController extends AbstractController
         // et permet d'envoyer les données au navigateur provenant de la BDD
     {
         return $this->render('blog/home.html.twig', [
-            'title' => "Bienvenue sur le blog Symfony",
+            'title' => "Bienvenue sur mon blog Symfony",
             'age' => 25
         ]);
     }

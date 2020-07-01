@@ -60,8 +60,31 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
+    # role_hierarchy indique à Symfony que les internautes ayant un ROLE_ADMIN (rôle administrateur) ont aussi un ROLE_USER.
+    # Ils ont donc accès à la totalité du site.
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
+
+    
+    # access_control indique à Symfony à quelles parties les internautes
+    # Par défaut, ces accès sont commentés. Penser à les décommenter lors de la création du Back Office
+    # et de l'attribution des roles aux utilisateurs.
+
+    # { path: ^/admin, roles: ROLE_ADMIN } = On indique à Symfony que seuls les ROLE_ADMIN ont accès à cette route '/admin'.
+    # Ceux qui ont accès à la route /admin sont les personnes ayant un Role Admin en BDD
+
+    # { path: ^/login, roles: ROLE_USER } = On indique à Symfony que seuls les ROLE_USER ont accès à cette route '/login'.
+
+    # access_denied_url: /blog = Si un utilisateur ayant un ROLE_USER tente d'accéder au Back Office, il est redirigé automatiquement vers la route '/blog',
+    # cad l'affichage de tous les articles.
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN } // ceux qui ont accès à la partie sont les personnes ayant un Role Admin en BDD
-        # - { path: ^/profile, roles: ROLE_USER }
+        
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        
+        - { path: ^/login, roles: ROLE_USER }
+    
+    
+    access_denied_url: /blog

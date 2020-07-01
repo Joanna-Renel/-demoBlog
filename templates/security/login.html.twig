@@ -22,14 +22,31 @@
 
 <h1 class="display-4 text-center my-4">Identifiez-vous</h1>
 
-{# {{ path('security_login') }} permet de préciser à Symfony qu'il doit contrôler les données du formulaire sur la route 'security_login'
-(check_path dans config > security.yaml)  #}
+
+    {# On entre dans la condition if si l'internaute a saisi de mauvais identifiants #}
+    {% if error %}
+
+      <div class="bg-danger text-white text-center p-3 col-md-4 mx-auto rounded">
+        {# trans est un filtre qui permet de traduire le message d'erreur 'Invalid credentials.' prédéfini par Symfony #}
+        {# Ce message est traduit dans translations > security.en.php #}
+        {{ error.messageKey|trans(error.messageData, 'security') }}
+      </div>
+    {% endif %}
+
+
+    {# {{ path('security_login') }} permet de préciser à Symfony qu'il doit contrôler les données du formulaire sur la route 'security_login'
+    (cf check_path dans config > security.yaml)  
+
+    Symfony utilise les attributs name spécifiques '_username' et '_password' pour aller contrôler les données en BDD 
+    Sans ces attributs, la vérification des données est impossible. #}
 
 <form method="post" class="col-md-5 mx-auto" action="{{ path('security_login') }}">
 
   <div class="form-group">
     <label for="_username">Email</label>
-    <input type="text" class="form-control" id="_username" name="_username">
+    <input type="text" class="form-control" id="_username" name="_username" value=" {{ last_username }}">
+    {# value=" {{ last_username }} permet de récupérer le dernier email saisi par l'internaute en cas de mauvaise connexion, afin
+    de lui éviter de le resaisir. Cette variable last.username provient de la méthode login() du SecurityController. #}
   </div>
 
   <div class="form-group">
