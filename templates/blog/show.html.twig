@@ -30,8 +30,13 @@
             {# Ajout d'un bouton 'Modifier' pour modifier l'article depuis le détail de l'article.
             'blog_edit' est la route pour modifier un article. Elle attend un paramètre de type 'id'
             Le paramètre id de l'URL correspond à l'article à modifier. #}
+
+            {# Si l'internaute est connecté, on lui proposer de modifier l'article en faisant apparaître le bouton #}
+            {% if app.user %}
             <span class="col-md-6 text-left"><a class="text-left btn btn-warning" href="{{ path('blog_edit', {'id' : article.id }) }}">Modifier</a></span>
-            
+            {% endif %}
+
+
             {# Affichage de la date #}
             {# 'article.category.title' est un objet dans un objet : on affiche le nom de la catégorie dont l'article fait partie #}
             <span class=" col-md-2 offset-md-4 font-italic text-right"> Posté le {{ article.createdAt|date("m/d/Y")}} à {{ article.createdAt|date("H:i:s")}} dans la catégorie <strong>{{ article.category.title }} </strong></span>
